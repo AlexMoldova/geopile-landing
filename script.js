@@ -1,6 +1,16 @@
 // Geopile Landing — Conversion Scripts (concria style)
 
 // ===== Smooth Scroll with header offset =====
+function scrollToTarget(target) {
+    const header = document.querySelector('.header');
+    const stickyCta = document.querySelector('.sticky-cta');
+    const headerH = header ? header.offsetHeight : 0;
+    const stickyH = (stickyCta && window.getComputedStyle(stickyCta).display !== 'none') ? stickyCta.offsetHeight + 10 : 0;
+    const offset = headerH + 10;
+    const top = target.getBoundingClientRect().top + window.pageYOffset - offset;
+    window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+}
+
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function(e) {
         const href = this.getAttribute('href');
@@ -8,9 +18,8 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         const target = document.querySelector(href);
         if (target) {
             e.preventDefault();
-            const headerHeight = document.querySelector('.header').offsetHeight + 10;
-            const top = target.getBoundingClientRect().top + window.pageYOffset - headerHeight;
-            window.scrollTo({ top, behavior: 'smooth' });
+            // Small delay so sticky bar hides/if needed
+            setTimeout(() => scrollToTarget(target), 50);
         }
     });
 });
