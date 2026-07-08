@@ -9,7 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     
-    <!-- Meta Pixel Code -->
+    <!-- Meta Pixel -->
     <script>
     !function(f,b,e,v,n,t,s)
     {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
@@ -21,7 +21,6 @@
     'https://connect.facebook.net/en_US/fbevents.js');
     fbq('init', 'YOUR_PIXEL_ID_HERE');
     fbq('track', 'PageView');
-    // Track successful form submission as Lead conversion
     fbq('track', 'Lead', {
         content_name: 'Geopile Form Submission',
         content_category: 'Foundation Inquiry',
@@ -40,7 +39,7 @@
         <h1>Mulțumim pentru solicitare!</h1>
         <p>Am primit cererea ta. Un specialist Geopile te va contacta în maximum 24 de ore cu o ofertă personalizată pentru fundația ta.</p>
         
-        <a href="tel:+40736977215" class="btn btn-primary btn-lg" onclick="fbq('track', 'Contact');">
+        <a href="tel:+40736977215" class="btn btn-primary btn-lg" onclick="fbq('track','Contact');">
             📞 Sună acum pentru răspuns imediat
         </a>
         
@@ -52,7 +51,7 @@
             <p>✉️ pilotipresati@gmail.com</p>
         </div>
         
-        <a href="https://geopile.eu/" style="display: inline-block; margin-top: 24px; color: #f5a623; font-weight: 600;">← Înapoi la site-ul Geopile</a>
+        <a href="https://geopile.eu/" style="display: inline-block; margin-top: 24px; color: #14c947; font-weight: 600;">← Înapoi la site-ul Geopile</a>
     </div>
 </section>
 

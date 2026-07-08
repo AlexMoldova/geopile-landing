@@ -1,24 +1,21 @@
-// Geopile Landing Page - Conversion Scripts
+// Geopile Landing — Conversion Scripts (concria style)
 
-// ===== Smooth Scroll for Anchor Links =====
+// ===== Smooth Scroll =====
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function (e) {
+    anchor.addEventListener('click', function(e) {
         const target = document.querySelector(this.getAttribute('href'));
         if (target) {
             e.preventDefault();
-            const offset = window.innerWidth <= 768 ? 0 : 0;
-            const top = target.getBoundingClientRect().top + window.pageYOffset - offset;
+            const top = target.getBoundingClientRect().top + window.pageYOffset;
             window.scrollTo({ top, behavior: 'smooth' });
         }
     });
 });
 
-// ===== Form Submission with Conversion Tracking =====
+// ===== Form Submission Tracking =====
 const leadForm = document.getElementById('leadForm');
-
 if (leadForm) {
-    leadForm.addEventListener('submit', function(e) {
-        // Track Lead conversion
+    leadForm.addEventListener('submit', function() {
         if (typeof fbq !== 'undefined') {
             fbq('track', 'Lead', {
                 content_name: 'Geopile Landing Form',
@@ -27,18 +24,10 @@ if (leadForm) {
                 currency: 'EUR'
             });
         }
-        
-        // The form will redirect to multumim.html naturally
-        // because of action="multumim.html" method="GET"
     });
 }
 
-// ===== Scroll-triggered animations =====
-const observerOptions = {
-    threshold: 0.15,
-    rootMargin: '0px 0px -50px 0px'
-};
-
+// ===== Scroll Animations =====
 const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
         if (entry.isIntersecting) {
@@ -47,69 +36,31 @@ const observer = new IntersectionObserver((entries) => {
             observer.unobserve(entry.target);
         }
     });
-}, observerOptions);
+}, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
 
-// Apply animation to cards
-document.querySelectorAll('.service-card, .why-item, .step, .project-card, .testimonial-card').forEach(el => {
+document.querySelectorAll('.adv-card, .service-card, .step, .project-card, .app-item, .spec-row').forEach(el => {
     el.style.opacity = '0';
-    el.style.transform = 'translateY(30px)';
-    el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+    el.style.transform = 'translateY(24px)';
+    el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
     observer.observe(el);
 });
 
-// ===== Phone input formatting =====
-const phoneInput = document.getElementById('phone');
-
-if (phoneInput) {
-    phoneInput.addEventListener('input', function(e) {
-        let value = e.target.value.replace(/\D/g, '');
-        
-        // Romanian phone formatting
-        if (value.startsWith('40')) {
-            // International format
-            value = '+' + value.slice(0, 2) + ' ' + value.slice(2, 4) + ' ' + value.slice(4, 7) + ' ' + value.slice(7, 10);
-        } else if (value.startsWith('07') || value.startsWith('00')) {
-            value = value.slice(0, 4) + ' ' + value.slice(4, 7) + ' ' + value.slice(7, 10);
-        }
-        
-        e.target.value = value;
-    });
-}
-
-// ===== Show sticky CTA after scrolling =====
-let lastScroll = 0;
-
+// ===== Scroll Depth Tracking =====
 window.addEventListener('scroll', () => {
-    const currentScroll = window.pageYOffset;
-    
-    // Track scroll depth for Facebook
-    if (typeof fbq !== 'undefined') {
-        const scrollPercent = Math.round((currentScroll / (document.body.scrollHeight - window.innerHeight)) * 100);
-        
-        if (scrollPercent >= 50 && !window._fbqScroll50) {
-            window._fbqScroll50 = true;
-            fbq('trackCustom', 'Scroll50');
-        }
-        if (scrollPercent >= 90 && !window._fbqScroll90) {
-            window._fbqScroll90 = true;
-            fbq('trackCustom', 'Scroll90');
-        }
-    }
-    
-    lastScroll = currentScroll;
+    if (typeof fbq === 'undefined') return;
+    const p = Math.round((window.pageYOffset / (document.body.scrollHeight - window.innerHeight)) * 100);
+    if (p >= 50 && !window._fbq50) { window._fbq50 = true; fbq('trackCustom', 'Scroll50'); }
+    if (p >= 90 && !window._fbq90) { window._fbq90 = true; fbq('trackCustom', 'Scroll90'); }
 });
 
-// ===== Time-based urgency banner =====
+// ===== Working Hours Badge =====
 (function() {
     const now = new Date();
-    const hour = now.getHours();
-    const isWeekday = now.getDay() >= 1 && now.getDay() <= 6;
-    
-    // If within working hours, show "available now" indicator
-    if (isWeekday && hour >= 8 && hour < 18) {
-        const heroBadge = document.querySelector('.hero-badge');
-        if (heroBadge) {
-            heroBadge.innerHTML = '🟢 Disponibili acum — Sună și primești ofertă astăzi!';
-        }
+    const hour = now.getUTCHours() + 3; // Romania is UTC+3
+    const day = now.getUTCDay();
+    const isWorkday = day >= 1 && day <= 6;
+    if (isWorkday && hour >= 8 && hour < 18) {
+        const badge = document.querySelector('.hero-badge');
+        if (badge) badge.innerHTML = '🟢 Disponibili acum — Sună și primești ofertă astăzi!';
     }
 })();
