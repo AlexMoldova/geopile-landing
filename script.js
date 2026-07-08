@@ -1,33 +1,47 @@
-// Geopile Landing — Conversion Scripts (concria style)
+// Geopile Landing — Conversion Scripts
 
-// ===== Smooth Scroll with header offset =====
-function scrollToTarget(target) {
-    const header = document.querySelector('.header');
-    const stickyCta = document.querySelector('.sticky-cta');
-    const headerH = header ? header.offsetHeight : 0;
-    const stickyH = (stickyCta && window.getComputedStyle(stickyCta).display !== 'none') ? stickyCta.offsetHeight + 10 : 0;
-    const offset = headerH + 10;
-    const top = target.getBoundingClientRect().top + window.pageYOffset - offset;
-    window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+// ===== MODAL FORM =====
+function openForm() {
+    var modal = document.getElementById('modalForm');
+    if (modal) {
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+        if (typeof fbq !== 'undefined') fbq('track', 'Lead');
+    }
 }
 
+function closeForm() {
+    var modal = document.getElementById('modalForm');
+    if (modal) {
+        modal.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+}
+
+// Close on ESC
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closeForm();
+});
+
+// ===== Smooth Scroll (for nav links to sections) =====
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function(e) {
         const href = this.getAttribute('href');
         if (href === '#' || href.length < 2) return;
         const target = document.querySelector(href);
-        if (target) {
+        if (target && !target.classList.contains('modal-overlay')) {
             e.preventDefault();
-            // Small delay so sticky bar hides/if needed
-            setTimeout(() => scrollToTarget(target), 50);
+            const header = document.querySelector('.header');
+            const headerH = header ? header.offsetHeight : 0;
+            const top = target.getBoundingClientRect().top + window.pageYOffset - headerH - 10;
+            window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
         }
     });
 });
 
 // ===== Form Submission Tracking =====
-const leadForm = document.getElementById('leadForm');
-if (leadForm) {
-    leadForm.addEventListener('submit', function() {
+document.querySelectorAll('form[action="multumim.html"]').forEach(form => {
+    form.addEventListener('submit', function() {
         if (typeof fbq !== 'undefined') {
             fbq('track', 'Lead', {
                 content_name: 'Geopile Landing Form',
@@ -37,7 +51,7 @@ if (leadForm) {
             });
         }
     });
-}
+});
 
 // ===== Scroll Animations =====
 const observer = new IntersectionObserver((entries) => {
@@ -68,7 +82,7 @@ window.addEventListener('scroll', () => {
 // ===== Working Hours Badge =====
 (function() {
     const now = new Date();
-    const hour = now.getUTCHours() + 3; // Romania is UTC+3
+    const hour = now.getUTCHours() + 3;
     const day = now.getUTCDay();
     const isWorkday = day >= 1 && day <= 6;
     if (isWorkday && hour >= 8 && hour < 18) {
